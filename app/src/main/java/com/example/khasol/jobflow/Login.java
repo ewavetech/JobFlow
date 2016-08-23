@@ -1,6 +1,7 @@
 package com.example.khasol.jobflow;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
@@ -29,6 +32,8 @@ public class Login extends Activity {
     Boolean isInternetPresent = false;
     String res;
     SessionManager sessionManager;
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,16 +62,16 @@ public class Login extends Activity {
                         new control_login_services().execute();
 
                     }
-                }
-                else {
+                } else {
 
-                    Toast.makeText(Login.this,"Please check your internet or network",Toast.LENGTH_SHORT).show();;
+                    Toast.makeText(Login.this, "Please check your internet or network", Toast.LENGTH_SHORT).show();
+                    ;
                 }
             }
 
         });
 
-       action();
+        action();
     }
 
     void init() {
@@ -74,8 +79,11 @@ public class Login extends Activity {
 
         user_name = (EditText) findViewById(R.id.user_name);
         user_password = (EditText) findViewById(R.id.user_password);
-         btn_login = (Button) findViewById(R.id.btn_login);
-
+        btn_login = (Button) findViewById(R.id.btn_login);
+       progressDialog = new ProgressDialog(Login.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setTitle("JobFLow");
+        progressDialog.setMessage("Please wait!");
 
     }
 
@@ -85,15 +93,16 @@ public class Login extends Activity {
     }
 
     class control_login_services extends AsyncTask<Void, Void, Void> {
-String obj;
+        String obj;
         String name, password;
-
+JSONObject jsonObject;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
             name = user_name.getText().toString();
             password = user_password.getText().toString();
+          progressDialog.show();
         }
 
         @Override
@@ -101,10 +110,11 @@ String obj;
 
             try {
                 obj = login_webservices.Send_data(name, password);
-res = obj.toString();
-                Log.i(Tag, res.toString());
+
+                res = obj.toString();
+                Log.i("res", res.toString());
             } catch (UnsupportedEncodingException e) {
-                Log.i(Tag,e.getMessage().toString());
+                Log.i(Tag, e.getMessage().toString());
             }
             return null;
         }
@@ -112,25 +122,26 @@ res = obj.toString();
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            progressDialog.hide();
             if (check == false) {
+
+
                 if (res.equals("0")) {
                     Toast.makeText(Login.this, "user name and password does not exist", Toast.LENGTH_SHORT).show();
                 }
-                if (res.equals("2")) {
+             else  if (res.equals("2")) {
                     Toast.makeText(Login.this, "Please verify your email id", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
+                    Log.i("info",res);
                     String[] parts = res.split("-");
                     String part1 = parts[0];
                     String part2 = parts[1];
-                    sessionManager.createLoginSession(part2,name,password);
-                    Intent intent = new Intent(Login.this,ControlViewPager.class);
+                    sessionManager.createLoginSession(part2, name, password);
+                    Intent intent = new Intent(Login.this, ControlViewPager.class);
                     startActivity(intent);
                 }
-            }
-            else{
-
-                Toast.makeText(Login.this,"Please check your network or service",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(Login.this, "Please check your network or service", Toast.LENGTH_SHORT).show();
             }
 
         }

@@ -201,6 +201,7 @@ public static Activity activity;
 
         @Override
         public int getCount() {
+
             return mFragmentList.size();
         }
 
@@ -215,4 +216,5 @@ public static Activity activity;
             return mFragmentTitleList.get(position);
         }
     }
+
 }

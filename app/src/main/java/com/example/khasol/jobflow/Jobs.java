@@ -1,5 +1,6 @@
 package com.example.khasol.jobflow;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -34,11 +33,9 @@ public class Jobs extends android.support.v4.app.Fragment {
     private List<CustomeDataAdapter> job_list = new ArrayList<>();
     List<String> list = new ArrayList();
     private JobsAdapter mAdapter;
-    RelativeLayout relativeLayout;
     LinearLayoutManager mLayoutManager;
     CustomeDataAdapter jobs;;
     RecyclerView recyclerView;
-    Animation animation;
     private boolean check = false;
     AllJobs_Webservices allJobs_webservices;
     String Tag = "exception";
@@ -51,6 +48,7 @@ public class Jobs extends android.support.v4.app.Fragment {
 
     ConnectionDetector connectionDetector;
     Boolean isInternetPresent;
+    ProgressDialog progressDialog;
     public Jobs() {
         // Required empty public constructor
     }
@@ -78,17 +76,12 @@ public class Jobs extends android.support.v4.app.Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(ControlViewPager.activity, recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                //CustomeDataAdapter movie = job_list.get(position);
-                String jobId = job_id.get(position);
-                int p = position;
-                String po = String.valueOf(p);
+                int at_position = position;
+                String con_position = String.valueOf(at_position);
                 Intent intent = new Intent(ControlViewPager.activity,JobDetails.class);
-                intent.putExtra("position",po);
+                intent.putExtra("position",con_position);
                 startActivity(intent);
-
-
             }
-
 
             @Override
             public void onLongClick(View view, int position) {
@@ -98,12 +91,6 @@ public class Jobs extends android.support.v4.app.Fragment {
 
 
         this.recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            boolean scroll_down;
-            int mLastFirstVisibleItem = -1;
-            int currentFirstVisibleItem = 0;
-
-            int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
@@ -115,18 +102,16 @@ public class Jobs extends android.support.v4.app.Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 5) {
-                    scroll_down = true;
 
-                        ControlViewPager.mActionBar.hide();
+                        ControlViewPager.toolbar.setVisibility(View.GONE);
 
                 } else if (dy < -5) {
-                        ControlViewPager.mActionBar.show();
+                    ControlViewPager.toolbar.setVisibility(View.VISIBLE);
 
                 }
             }
 
         });
-       // preParedDate();
         allJobs_webservices = new AllJobs_Webservices();
         job_name = new ArrayList<>();
         job_type = new ArrayList<>();
@@ -134,8 +119,10 @@ public class Jobs extends android.support.v4.app.Fragment {
         days = new ArrayList<>();
         job_id = new ArrayList<>();
         company_name = new ArrayList<>();
-
-        connectionDetector = new ConnectionDetector(ControlViewPager.activity);
+         progressDialog  = new ProgressDialog(getActivity());
+        progressDialog.setTitle("JobFlow");
+        progressDialog.setMessage("Please wait!s");
+        connectionDetector = new ConnectionDetector(getActivity());
         isInternetPresent = connectionDetector.isConnectingToInternet();
         if (isInternetPresent){
             new control_alljobs_services().execute();
@@ -143,35 +130,12 @@ public class Jobs extends android.support.v4.app.Fragment {
         }
         else{
 
-            Toast.makeText(ControlViewPager.activity,"Please check your internet or network",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),"Please check your internet or network",Toast.LENGTH_SHORT).show();
         }
 
         return view;
     }
 
-
-    private void preParedDate() {
-
-      /*  customeDataAdapter = new CustomeDataAdapter("Android developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter("PHP developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter("IOS developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter(".Net developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter(".Net developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter(".Net developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter(".Net developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter(".Net developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter(".Net developer", "Full time", "25 days", "stockholm");
-        job_list.add(customeDataAdapter);*/
-
-    }
 
     public interface ClickListener {
         void onClick(View view, int position);
@@ -182,7 +146,6 @@ public class Jobs extends android.support.v4.app.Fragment {
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
-        // ControlViewPager.activity.ClickListener clickListener;
         ClickListener clickListener;
 
         public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final ClickListener clickListener) {
@@ -228,12 +191,12 @@ public class Jobs extends android.support.v4.app.Fragment {
 
     class control_alljobs_services extends AsyncTask<Void, Void, Void> {
         String obj;
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             job_list.clear();
+            progressDialog.show();
+
         }
 
         @Override
@@ -268,6 +231,7 @@ public class Jobs extends android.support.v4.app.Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            progressDialog.hide();
             if (check == false) {
                 if (job_name.size()>0){
                     for (int i = 0; i<job_name.size();i++){
@@ -280,7 +244,7 @@ public class Jobs extends android.support.v4.app.Fragment {
                 }
 
             } else {
-//service not running now
+                Toast.makeText(getActivity(),"Check your network or server",Toast.LENGTH_SHORT).show();
 
             }
 
