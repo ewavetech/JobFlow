@@ -162,13 +162,27 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
+             android:layout_marginRight="10dp"
                 android:background="#B73070"
                 android:text="Apply now"
                 android:textColor="#fff"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:id="@+id/btn_apply"
+android:layout_weight="1"
+                />
 
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:background="#B73070"
+                android:text="Save job"
+                android:textColor="#fff"
+                android:textSize="15sp"
+                android:id="@+id/btn_savejob"
+                android:layout_weight="1"
                 />
 
         </LinearLayout>

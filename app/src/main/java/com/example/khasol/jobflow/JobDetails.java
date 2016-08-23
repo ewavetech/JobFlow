@@ -20,7 +20,7 @@ import webservice_control.UpplyJob_Webservices;
 public class JobDetails extends Activity {
 
     TextView job_name,company_name,job_type,phone,address,about_company;
-    Button btn_applay;
+    Button btn_applay,btn_savejob;
     UpplyJob_Webservices upplyJob_webservices;
     int  at_position;
     String res;
@@ -55,7 +55,25 @@ job_name = (TextView) findViewById(R.id.job_name);
                 isPresent = cd.isConnectingToInternet();
                 if (isPresent) {
 
-                    new control_login_services().execute();
+                  //  new control_savejob_services().execute();
+
+                }
+                else{
+
+                    Toast.makeText(JobDetails.this,"Please check your internet connection",Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+        btn_savejob = (Button) findViewById(R.id.btn_savejob);
+        btn_applay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                isPresent = cd.isConnectingToInternet();
+                if (isPresent) {
+
+                    new control_savejob_services().execute();
 
                 }
                 else{
@@ -64,6 +82,7 @@ job_name = (TextView) findViewById(R.id.job_name);
                 }
             }
         });
+
 
     }
     void put_value(){
@@ -76,7 +95,51 @@ job_name = (TextView) findViewById(R.id.job_name);
         phone.setText("0234");
         address.setText("abc");
     }
-    class control_login_services extends AsyncTask<Void, Void, Void> {
+    class control_apply_services extends AsyncTask<Void, Void, Void> {
+        String obj;
+        String user_id, job_id;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            user_id = user.get(SessionManager.KEY_USER_ID);
+            job_id = Jobs.job_id.get(at_position);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            try {
+                obj = upplyJob_webservices.Send_data(user_id, job_id);
+                res = obj.toString();
+                Log.i("info", res.toString());
+            } catch (UnsupportedEncodingException e) {
+                Log.i("info",e.getMessage().toString());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (check == false) {
+                if (res.equals("0")) {
+                    Toast.makeText(JobDetails.this, "user name and password does not exist", Toast.LENGTH_SHORT).show();
+                }
+                else if(res.contains("1")){
+                    Toast.makeText(JobDetails.this, "You have applied successfully", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else{
+
+                Toast.makeText(JobDetails.this,"Please check your network or service",Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    class control_savejob_services extends AsyncTask<Void, Void, Void> {
         String obj;
         String user_id, job_id;
 
