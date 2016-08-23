@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home"
+        android:orderInCategory="100"
+        android:title="home"
+        app:showAsAction="always"
+        android:icon="@drawable/home"
+        />
+    <item
+        android:id="@+id/search"
+        android:orderInCategory="200"
+        android:title="Search"
+        android:icon="@drawable/search"
+        app:showAsAction="always"
+       />
+    <item
+        android:id="@+id/inbox"
+        android:orderInCategory="200"
+        android:title="inbox"
+        android:icon="@drawable/inbox"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:orderInCategory="700"
+        android:title=""
+
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/profile"
+        android:orderInCategory="700"
+        android:title="profile"
+android:icon="@drawable/group"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:orderInCategory="700"
+        android:title=""
+        app:showAsAction="always"
+        />
+
+
+</menu>
