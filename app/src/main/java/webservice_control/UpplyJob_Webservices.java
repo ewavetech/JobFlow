@@ -28,11 +28,11 @@ public class UpplyJob_Webservices {
     public UpplyJob_Webservices(){
     }
 
-    public  String Send_data(String user_id,String job_id) throws UnsupportedEncodingException {
+    public  String Send_data(String user_id,String job_id,String URL) throws UnsupportedEncodingException {
 
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(Login.URL+"apply.php");
+            HttpPost httpPost = new HttpPost(Login.URL+URL);
             List<NameValuePair> list = new ArrayList<NameValuePair>();
             list.add(new BasicNameValuePair("user_id", user_id));
             list.add(new BasicNameValuePair("job_id", job_id));

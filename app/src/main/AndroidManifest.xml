@@ -48,6 +48,11 @@
             android:windowSoftInputMode="stateHidden|adjustPan">
 
         </activity>
+        <activity
+            android:name=".Control_ProgressDialog"
+            android:windowSoftInputMode="stateHidden|adjustPan">
+
+        </activity>
     </application>
 
 </manifest>

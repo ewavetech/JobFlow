@@ -133,10 +133,13 @@ JSONObject jsonObject;
                     Toast.makeText(Login.this, "Please verify your email id", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.i("info",res);
-                    String[] parts = res.split("-");
-                    String part1 = parts[0];
-                    String part2 = parts[1];
-                    sessionManager.createLoginSession(part2, name, password);
+                  //  String[] parts = res.split("-");
+                  //  String part1 = parts[0];
+                   // String part2 = parts[1];
+                    int num = Integer.parseInt(res);
+                    num = num-1;
+                    res = String.valueOf(num);
+                    sessionManager.createLoginSession(res, name, password);
                     Intent intent = new Intent(Login.this, ControlViewPager.class);
                     startActivity(intent);
                 }

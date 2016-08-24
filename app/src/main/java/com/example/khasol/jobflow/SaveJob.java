@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import webservice_control.AppliedJob_Webservices;
+import webservice_control.SaveJob_Webservices;
 
 /**
  * Created by Khasol on 8/10/2016.
@@ -36,7 +36,7 @@ public class SaveJob extends android.support.v4.app.Fragment {
     LinearLayoutManager mLayoutManager;
     CustomeDataAdapter customeDataAdapter;
     RecyclerView recyclerView;
-    private boolean check = false;
+    public static boolean check = false;
     String Tag = "exception";
     public static List<String> job_name;
     public static List<String> days;
@@ -50,8 +50,8 @@ public class SaveJob extends android.support.v4.app.Fragment {
 
     SessionManager sessionManager;
     String user_id;
-
-    AppliedJob_Webservices appliedJob_webservices;
+Control_ProgressDialog control_progressDialog;
+    SaveJob_Webservices saveJob_webservices;
 
     public SaveJob() {
         // Required empty public constructor
@@ -71,6 +71,7 @@ public class SaveJob extends android.support.v4.app.Fragment {
         }
         View view = inflater.inflate(R.layout.savejob, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        control_progressDialog = new Control_ProgressDialog();
         mAdapter = new SavedJob_Adapter(jobs_list);
         mLayoutManager = new LinearLayoutManager(ControlViewPager.activity);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -113,7 +114,7 @@ public class SaveJob extends android.support.v4.app.Fragment {
 
         });
 
-        init();
+
         return view;
     }
 
@@ -125,12 +126,12 @@ public class SaveJob extends android.support.v4.app.Fragment {
         days = new ArrayList<>();
         job_id = new ArrayList<>();
         company_name = new ArrayList<>();
-        appliedJob_webservices = new AppliedJob_Webservices();
-        sessionManager = new SessionManager(getActivity());
-        progressDialog = new ProgressDialog(getActivity());
+        saveJob_webservices = new SaveJob_Webservices();
+        sessionManager = new SessionManager(ControlViewPager.activity);
+        progressDialog = new ProgressDialog(ControlViewPager.activity);
         progressDialog.setTitle("JobFlow");
         progressDialog.setMessage("Please wait!s");
-        connectionDetector = new ConnectionDetector(getActivity());
+        connectionDetector = new ConnectionDetector(ControlViewPager.activity);
         isInternetPresent = connectionDetector.isConnectingToInternet();
         if (isInternetPresent) {
             new control_savejob_services().execute();
@@ -141,19 +142,6 @@ public class SaveJob extends android.support.v4.app.Fragment {
         }
     }
 
-    private void preParedDate() {
-        jobs_list.clear();
-        customeDataAdapter = new CustomeDataAdapter("Android developer", "Full time", "25 days", "stockholm", "", "");
-        jobs_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter("PHP developer", "Full time", "25 days", "stockholm", "", "");
-        jobs_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter("IOS developer", "Full time", "25 days", "stockholm", "", "");
-        jobs_list.add(customeDataAdapter);
-        customeDataAdapter = new CustomeDataAdapter(".Net developer", "Full time", "25 days", "stockholm", "", "");
-        jobs_list.add(customeDataAdapter);
-
-        mAdapter.notifyDataSetChanged();
-    }
 
     public interface ClickListener {
         void onClick(View view, int position);
@@ -210,7 +198,7 @@ public class SaveJob extends android.support.v4.app.Fragment {
 
     class control_savejob_services extends AsyncTask<Void, Void, Void> {
         String obj;
-
+String res;
 
         @Override
         protected void onPreExecute() {
@@ -218,7 +206,7 @@ public class SaveJob extends android.support.v4.app.Fragment {
             jobs_list.clear();
             HashMap<String, String> user = sessionManager.getUserDetails();
             user_id = user.get(SessionManager.KEY_USER_ID);
-            progressDialog.show();
+           progressDialog.show();
 
         }
 
@@ -226,23 +214,28 @@ public class SaveJob extends android.support.v4.app.Fragment {
         protected Void doInBackground(Void... voids) {
 
             try {
-                obj = appliedJob_webservices.get_jobs(user_id);
+                obj = saveJob_webservices.get_savejobs(user_id);
+                Log.i("log",obj.toString());
+                res = obj.toString();
+                if (res!=("0")) {
 
-                JSONObject jsonObject = new JSONObject(obj);
-                JSONArray jsonArray = jsonObject.getJSONArray("all_applied_job");
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = new JSONObject(obj);
+                    JSONArray jsonArray = jsonObject.getJSONArray("all_save_job");
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    job_name.add(jsonObject1.getString("JobTitle").toString());
-                    job_type.add(jsonObject1.getString("JobType").toString());
-                    location.add(jsonObject1.getString("Address").toString());
-                    days.add(jsonObject1.getString("Days").toString());
-                    job_id.add(jsonObject1.getString("JobId").toString());
-                    company_name.add(jsonObject1.getString("CompanyName").toString());
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        job_name.add(jsonObject1.getString("JobTitle").toString());
+                        job_type.add(jsonObject1.getString("JobType").toString());
+                        location.add(jsonObject1.getString("Address").toString());
+                        days.add(jsonObject1.getString("Days").toString());
+                        job_id.add(jsonObject1.getString("JobId").toString());
+                        company_name.add(jsonObject1.getString("CompanyName").toString());
+
+
+                    }
 
                 }
-
-                Log.i(Tag, obj.toString());
+                Log.i("savejob",user_id+" "+ obj.toString());
             } catch (UnsupportedEncodingException e) {
                 Log.i(Tag, e.getMessage().toString());
             } catch (JSONException e) {
@@ -254,23 +247,37 @@ public class SaveJob extends android.support.v4.app.Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressDialog.cancel();
-            if (check == false) {
-                if (job_name.size() > 0) {
-                    for (int i = 0; i < job_name.size(); i++) {
-                        customeDataAdapter = new CustomeDataAdapter(job_name.get(i).toString(), job_type.get(i).toString(), days.get(i).toString(), location.get(i).toLowerCase(),
-                                company_name.get(i).toString(), job_id.get(i).toString());
-                        jobs_list.add(customeDataAdapter);
+progressDialog.cancel();
+            if (!check) {
+                if (res.equals("0")) {
+                    Toast.makeText(ControlViewPager.activity, "No Save job exist", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (job_name.size() > 0) {
+                        for (int i = 0; i < job_name.size(); i++) {
+                            customeDataAdapter = new CustomeDataAdapter(job_name.get(i).toString(), job_type.get(i).toString(), days.get(i).toString(), location.get(i).toLowerCase(),
+                                    company_name.get(i).toString(), job_id.get(i).toString());
+                            jobs_list.add(customeDataAdapter);
 
+                        }
+                        mAdapter.notifyDataSetChanged();
                     }
-                    mAdapter.notifyDataSetChanged();
                 }
 
             } else {
-                Toast.makeText(getActivity(), "Check your network or server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ControlViewPager.activity, "Check your network or server", Toast.LENGTH_SHORT).show();
 
             }
+
+        }
+
+    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // Fetch data or something...
+            init();
         }
     }
-
 }

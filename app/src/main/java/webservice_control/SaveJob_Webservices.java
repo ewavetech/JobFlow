@@ -3,7 +3,7 @@ package webservice_control;
 import android.util.Log;
 
 import com.example.khasol.jobflow.Login;
-import com.example.khasol.jobflow.ShowAlljobs_WithoutLogin;
+import com.example.khasol.jobflow.SaveJob;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -32,7 +32,7 @@ public class SaveJob_Webservices {
 
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(Login.URL+"savejob.php");
+            HttpPost httpPost = new HttpPost(Login.URL+"savedjobs.php");
             List<NameValuePair> list = new ArrayList<NameValuePair>();
             list.add(new BasicNameValuePair("user_id", user_id));
             httpPost.setEntity(new UrlEncodedFormEntity(list));
@@ -41,7 +41,7 @@ public class SaveJob_Webservices {
             response = EntityUtils.toString(httpEntity);
 
         }catch (Exception e){
-            ShowAlljobs_WithoutLogin.check = true;
+            SaveJob.check = true;
             Log.i("exception",e.getMessage().toString());
 
         }

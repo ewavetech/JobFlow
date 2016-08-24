@@ -112,30 +112,33 @@ public class Jobs extends android.support.v4.app.Fragment {
             }
 
         });
-        allJobs_webservices = new AllJobs_Webservices();
-        job_name = new ArrayList<>();
-        job_type = new ArrayList<>();
-        location = new ArrayList<>();
-        days = new ArrayList<>();
-        job_id = new ArrayList<>();
-        company_name = new ArrayList<>();
-         progressDialog  = new ProgressDialog(getActivity());
-        progressDialog.setTitle("JobFlow");
-        progressDialog.setMessage("Please wait!s");
-        connectionDetector = new ConnectionDetector(getActivity());
-        isInternetPresent = connectionDetector.isConnectingToInternet();
-        if (isInternetPresent){
-            new control_alljobs_services().execute();
-
-        }
-        else{
-
-            Toast.makeText(getActivity(),"Please check your internet or network",Toast.LENGTH_SHORT).show();
-        }
 
         return view;
     }
+void init(){
 
+    allJobs_webservices = new AllJobs_Webservices();
+    job_name = new ArrayList<>();
+    job_type = new ArrayList<>();
+    location = new ArrayList<>();
+    days = new ArrayList<>();
+    job_id = new ArrayList<>();
+    company_name = new ArrayList<>();
+    progressDialog  = new ProgressDialog(ControlViewPager.activity);
+    progressDialog.setTitle("JobFlow");
+    progressDialog.setMessage("Please wait!s");
+    connectionDetector = new ConnectionDetector(ControlViewPager.activity);
+    isInternetPresent = connectionDetector.isConnectingToInternet();
+    if (isInternetPresent){
+        new control_alljobs_services().execute();
+
+    }
+    else{
+
+        Toast.makeText(getActivity(),"Please check your internet or network",Toast.LENGTH_SHORT).show();
+    }
+
+}
 
     public interface ClickListener {
         void onClick(View view, int position);
@@ -195,7 +198,7 @@ public class Jobs extends android.support.v4.app.Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             job_list.clear();
-            progressDialog.show();
+          progressDialog.show();
 
         }
 
@@ -231,7 +234,7 @@ public class Jobs extends android.support.v4.app.Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressDialog.hide();
+            progressDialog.cancel();
             if (check == false) {
                 if (job_name.size()>0){
                     for (int i = 0; i<job_name.size();i++){
@@ -248,6 +251,15 @@ public class Jobs extends android.support.v4.app.Fragment {
 
             }
 
+        }
+
+    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // Fetch data or something...
+            init();
         }
     }
 }

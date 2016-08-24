@@ -55,7 +55,7 @@ job_name = (TextView) findViewById(R.id.job_name);
                 isPresent = cd.isConnectingToInternet();
                 if (isPresent) {
 
-                  //  new control_savejob_services().execute();
+                    new control_apply_services().execute();
 
                 }
                 else{
@@ -66,7 +66,7 @@ job_name = (TextView) findViewById(R.id.job_name);
             }
         });
         btn_savejob = (Button) findViewById(R.id.btn_savejob);
-        btn_applay.setOnClickListener(new View.OnClickListener() {
+        btn_savejob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -111,7 +111,7 @@ job_name = (TextView) findViewById(R.id.job_name);
         protected Void doInBackground(Void... voids) {
 
             try {
-                obj = upplyJob_webservices.Send_data(user_id, job_id);
+                obj = upplyJob_webservices.Send_data(user_id, job_id,"apply.php");
                 res = obj.toString();
                 Log.i("info", res.toString());
             } catch (UnsupportedEncodingException e) {
@@ -125,10 +125,10 @@ job_name = (TextView) findViewById(R.id.job_name);
             super.onPostExecute(aVoid);
             if (check == false) {
                 if (res.equals("0")) {
-                    Toast.makeText(JobDetails.this, "user name and password does not exist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JobDetails.this, "You don't apply this job successfully", Toast.LENGTH_SHORT).show();
                 }
                 else if(res.contains("1")){
-                    Toast.makeText(JobDetails.this, "You have applied successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JobDetails.this, "You have applied a job successfully", Toast.LENGTH_SHORT).show();
                 }
             }
             else{
@@ -149,13 +149,14 @@ job_name = (TextView) findViewById(R.id.job_name);
             HashMap<String, String> user = sessionManager.getUserDetails();
             user_id = user.get(SessionManager.KEY_USER_ID);
             job_id = Jobs.job_id.get(at_position);
+            Log.i("userid",job_id+"  "+user_id);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
 
             try {
-                obj = upplyJob_webservices.Send_data(user_id, job_id);
+                obj = upplyJob_webservices.Send_data(user_id, job_id,"savejob.php");
                 res = obj.toString();
                 Log.i("info", res.toString());
             } catch (UnsupportedEncodingException e) {
@@ -169,10 +170,10 @@ job_name = (TextView) findViewById(R.id.job_name);
             super.onPostExecute(aVoid);
             if (check == false) {
                 if (res.equals("0")) {
-                    Toast.makeText(JobDetails.this, "user name and password does not exist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JobDetails.this, "You don't save this job successfully", Toast.LENGTH_SHORT).show();
                 }
                 else if(res.contains("1")){
-                    Toast.makeText(JobDetails.this, "You have applied successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JobDetails.this, "You have saved a job successfully", Toast.LENGTH_SHORT).show();
                 }
             }
             else{

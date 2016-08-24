@@ -42,7 +42,7 @@ public static Activity activity;
     View mCustomView;
     ImageView profile_img;
     NavigationView navigationView;
-
+int po = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,43 +134,7 @@ public static Activity activity;
 
     void init(){
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-    /*    mActionBar = getSupportActionBar();
-        mActionBar.setDisplayShowTitleEnabled(false);
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setDisplayShowCustomEnabled(true);
-        mActionBar.setDisplayShowTitleEnabled(false);
-        LayoutInflater mInflater = LayoutInflater.from(this);
-         mCustomView = mInflater.inflate(R.layout.customize_action_bar, null);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
-                ActionBar.LayoutParams.MATCH_PARENT);
-        mActionBar.setCustomView(mCustomView, layoutParams);
-        toolbar = (Toolbar) mCustomView.getParent();
-        toolbar.setContentInsetsAbsolute(0, 0);
-
-        ImageView image_home = (ImageView) mCustomView.findViewById(R.id.home);
-        image_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(ControlViewPager.this,FirstScreen.class);
-                startActivity(intent);
-             *//*Animation   animation = AnimationUtils.loadAnimation(ControlViewPager.activity, R.anim.move);
-               left.startAnimation(animation);*//*
-
-            }
-        });
-
-        ImageView image_search = (ImageView) mCustomView.findViewById(R.id.search);
-        image_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(ControlViewPager.this,Search.class);
-                startActivity(intent);
-            }
-        });*/
-        setupViewPager(viewPager);
+             setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -194,8 +158,10 @@ public static Activity activity;
             super(manager);
         }
 
+
         @Override
         public Fragment getItem(int position) {
+
             return mFragmentList.get(position);
         }
 
@@ -212,7 +178,6 @@ public static Activity activity;
 
         @Override
         public CharSequence getPageTitle(int position) {
-
             return mFragmentTitleList.get(position);
         }
     }
