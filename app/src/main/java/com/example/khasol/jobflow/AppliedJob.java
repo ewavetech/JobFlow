@@ -203,6 +203,7 @@ String res;
         protected void onPreExecute() {
             super.onPreExecute();
             jobs_list.clear();
+            job_name.clear();
             HashMap<String, String> user = sessionManager.getUserDetails();
             user_id = user.get(SessionManager.KEY_USER_ID);
             progressDialog.show();
@@ -249,6 +250,8 @@ if (res!="0") {
 
                 if (check == false) {
                     if (res.equals("0")) {
+                        job_name.clear();
+                        jobs_list.clear();
                         Toast.makeText(ControlViewPager.activity, "No job exist", Toast.LENGTH_SHORT).show();
                     }
                     else {
