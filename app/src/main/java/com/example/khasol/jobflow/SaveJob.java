@@ -204,6 +204,7 @@ String res;
         protected void onPreExecute() {
             super.onPreExecute();
             jobs_list.clear();
+
             HashMap<String, String> user = sessionManager.getUserDetails();
             user_id = user.get(SessionManager.KEY_USER_ID);
            progressDialog.show();
@@ -250,6 +251,7 @@ String res;
 progressDialog.cancel();
             if (!check) {
                 if (res.equals("0")) {
+                    jobs_list.clear();
                     Toast.makeText(ControlViewPager.activity, "No Save job exist", Toast.LENGTH_SHORT).show();
                 }
                 else {
