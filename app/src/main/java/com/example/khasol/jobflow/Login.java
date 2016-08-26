@@ -5,12 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -80,7 +80,7 @@ public class Login extends Activity {
         user_name = (EditText) findViewById(R.id.user_name);
         user_password = (EditText) findViewById(R.id.user_password);
         btn_login = (Button) findViewById(R.id.btn_login);
-       progressDialog = new ProgressDialog(Login.this);
+        progressDialog = new ProgressDialog(Login.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setTitle("JobFLow");
         progressDialog.setMessage("Please wait!");
@@ -95,27 +95,29 @@ public class Login extends Activity {
     class control_login_services extends AsyncTask<Void, Void, Void> {
         String obj;
         String name, password;
-JSONObject jsonObject;
+        JSONObject jsonObject;
+        String _name;
+        String _id;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
             name = user_name.getText().toString();
             password = user_password.getText().toString();
-          progressDialog.show();
+            progressDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
 
+
             try {
                 obj = login_webservices.Send_data(name, password);
-
-                res = obj.toString();
-                Log.i("res", res.toString());
             } catch (UnsupportedEncodingException e) {
-                Log.i(Tag, e.getMessage().toString());
+                e.printStackTrace();
             }
+
             return null;
         }
 
@@ -125,22 +127,28 @@ JSONObject jsonObject;
             progressDialog.hide();
             if (check == false) {
 
-
+                res = obj.toString();
                 if (res.equals("0")) {
                     Toast.makeText(Login.this, "user name and password does not exist", Toast.LENGTH_SHORT).show();
-                }
-             else  if (res.equals("2")) {
+                } else if (res.equals("2")) {
                     Toast.makeText(Login.this, "Please verify your email id", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.i("info",res);
-                  //  String[] parts = res.split("-");
-                  //  String part1 = parts[0];
-                   // String part2 = parts[1];
-                    int num = Integer.parseInt(res);
-                    num = num-1;
-                    res = String.valueOf(num);
-                    sessionManager.createLoginSession(res, name, password);
-                    Intent intent = new Intent(Login.this, ControlViewPager.class);
+
+                    if (res.length() > 1) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(obj);
+                            JSONArray jsonArray = jsonObject.getJSONArray("login");
+                            JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                            _name = jsonObject1.getString("FirstName").toString();
+                            _id = jsonObject1.getString("UserId").toString();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                      sessionManager.createLoginSession(_id, _name, password);
+                     Intent intent = new Intent(Login.this, ControlViewPager.class);
                     startActivity(intent);
                 }
             } else {

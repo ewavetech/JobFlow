@@ -20,13 +20,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,25 +42,26 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
     View test1View;
     android.support.v7.app.ActionBar mActionBar;
     CustomeDataAdapter_Firstacreen name;
-    Animation animation;
-
     DrawerLayout drawer;
     Toolbar toolbar;
-    View mCustomView;
     ImageView profile_img;
     NavigationView navigationView;
     SessionManager sessionManager;
-    TextView txt_name,txt_login,txt_signup,txt_feedback,txt_help,txt_invitefriend,txt_setting,txt_profile;
+    TextView txt_name, txt_login, txt_signup, txt_feedback, txt_help, txt_invitefriend, txt_setting, txt_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         sessionManager = new SessionManager(FirstScreen.this);
         if (sessionManager.isLoggedIn()) {
             setContentView(R.layout.activity_main);
-        }
-        else{
+
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            String name = user.get(SessionManager.USER_NAME);
+            String id = user.get(SessionManager.KEY_USER_ID);
+            String password = user.get(SessionManager.User_Password);
+        } else {
             setContentView(R.layout.withoutlogin_activity_main);
         }
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -90,7 +91,7 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
             @Override
             public void onClick(View view, int position) {
                 name = firstscrren_list.get(position);
-                Intent intent = new Intent(FirstScreen.this,ControlViewPager.class);
+                Intent intent = new Intent(FirstScreen.this, ControlViewPager.class);
                 startActivity(intent);
 
             }
@@ -115,14 +116,15 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
                 super.onScrollStateChanged(recyclerView, newState);
 
             }
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 currentFirstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
-                Log.d("current",""+currentFirstVisibleItem);
-                if (dy >5) {
-                   toolbar.setVisibility(View.GONE);
-                } else if (dy <-5) {
+                Log.d("current", "" + currentFirstVisibleItem);
+                if (dy > 5) {
+                    toolbar.setVisibility(View.GONE);
+                } else if (dy < -5) {
                     toolbar.setVisibility(View.VISIBLE);
                 }
             }
@@ -159,27 +161,49 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.profile) {
-            Toast.makeText(FirstScreen.this, "click", Toast.LENGTH_LONG).show();
+        if(id == R.id.search){
+            Intent intent = new Intent(FirstScreen.this,Search.class);
+            startActivity(intent);
+
+        }
+       else if(id == R.id.home){
+            /*Intent intent = new Intent(FirstScreen.this,Search.class);
+            startActivity(intent);
+*/
+        }
+        else if(id == R.id.inbox){
+            Intent intent = new Intent(FirstScreen.this,Search.class);
+            startActivity(intent);
+
+
+        }
+       else if (id == R.id.profile) {
             if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                 drawer.closeDrawer(Gravity.RIGHT);
 
             } else {
+
                 drawer.openDrawer(Gravity.RIGHT);
+                TextView user_name = (TextView) findViewById(R.id.txt_user_name);
 
-                if (sessionManager.isLoggedIn()){
+                if (sessionManager.isLoggedIn()) {
+                    HashMap<String, String> user = sessionManager.getUserDetails();
+                    String name = user.get(SessionManager.USER_NAME);
+
+                    user_name.setText(name);
 
 
-                }
-                else{
+                } else {
+                    user_name.setText("JobFlow");
+
                     txt_login = (TextView) findViewById(R.id.txt_login);
                     txt_login.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent  = new Intent(FirstScreen.this,Login.class);
+                            Intent intent = new Intent(FirstScreen.this, Login.class);
                             startActivity(intent);
                             drawer.closeDrawer(Gravity.RIGHT);
-                          //  finish();
+                            //  finish();
 
                         }
                     });
@@ -190,7 +214,6 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
                             Toast.makeText(FirstScreen.this, "Not available yet ", Toast.LENGTH_SHORT).show();
                         }
                     });
-
 
 
                 }
@@ -223,8 +246,6 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
     }
 
 
-
-
     private void prepareFirstScreenData() {
         CustomeDataAdapter_Firstacreen firstacreen = new CustomeDataAdapter_Firstacreen("Store", R.drawable.first_img);
         firstscrren_list.add(firstacreen);
@@ -232,7 +253,6 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
         firstscrren_list.add(firstacreen);
         firstacreen = new CustomeDataAdapter_Firstacreen("Super market", R.drawable.third_img);
         firstscrren_list.add(firstacreen);
-
 
 
         mAdapter.notifyDataSetChanged();

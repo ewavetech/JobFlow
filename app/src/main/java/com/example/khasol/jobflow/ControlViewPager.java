@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class ControlViewPager extends AppCompatActivity implements NavigationVie
 public static Activity activity;
     public static  Toolbar toolbar;
     public  static Context context;
+    public static TextView  show_jobs;
 
     DrawerLayout drawer;
 
@@ -49,12 +51,6 @@ int po = 0;
         setContentView(R.layout.viewpager_with_navigationdrawer);
         activity = this;
         context = this;
-        /*viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-*/
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -133,6 +129,7 @@ int po = 0;
     }
 
     void init(){
+        show_jobs = (TextView) findViewById(R.id.applied_show_job);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
              setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);

@@ -3,7 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="130dp"
-    android:background="#F2F2F2"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
 
     >
 <RelativeLayout
@@ -40,11 +41,14 @@
         >
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            >
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
+
                 >
                 <TextView
                     android:layout_width="fill_parent"

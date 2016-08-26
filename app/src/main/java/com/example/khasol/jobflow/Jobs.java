@@ -65,9 +65,10 @@ public class Jobs extends android.support.v4.app.Fragment {
         if (container == null) {
             return null;
         }
-        mAdapter = new JobsAdapter(job_list);
         View view = inflater.inflate(R.layout.jobs, container, false);
+        ControlViewPager.show_jobs.setText("");
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mAdapter = new JobsAdapter(job_list);
               mLayoutManager = new LinearLayoutManager(ControlViewPager.activity);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

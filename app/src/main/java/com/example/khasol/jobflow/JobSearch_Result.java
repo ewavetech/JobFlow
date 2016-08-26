@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,9 +25,7 @@ public class JobSearch_Result extends AppCompatActivity {
     List<String> list = new ArrayList();
     private RecyclerView recyclerView;
     private JobsAdapter mAdapter;
-    RelativeLayout relativeLayout;
     LinearLayoutManager mLayoutManager;
-    View test1View;
    ActionBar mActionBar;
 List<String> name_list = new ArrayList<>();
     CustomeDataAdapter customeDataAdapter;

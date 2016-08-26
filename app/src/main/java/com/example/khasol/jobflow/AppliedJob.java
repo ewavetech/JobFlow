@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -51,6 +52,7 @@ public class AppliedJob extends android.support.v4.app.Fragment {
     AppliedJob_Webservices appliedJob_webservices;
     SessionManager sessionManager;
     String user_id;
+    TextView txt_jobs_show;
 
     public AppliedJob() {
         // Required empty public constructor
@@ -60,6 +62,7 @@ public class AppliedJob extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (container == null) {
@@ -81,6 +84,7 @@ public class AppliedJob extends android.support.v4.app.Fragment {
                 CustomeDataAdapter movie = jobs_list.get(position);
                 Toast.makeText(ControlViewPager.activity, movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onLongClick(View view, int position) {
 
@@ -127,7 +131,7 @@ public class AppliedJob extends android.support.v4.app.Fragment {
         job_id = new ArrayList<>();
         company_name = new ArrayList<>();
         appliedJob_webservices = new AppliedJob_Webservices();
-       sessionManager = new SessionManager(ControlViewPager.activity);
+        sessionManager = new SessionManager(ControlViewPager.activity);
         progressDialog = new ProgressDialog(ControlViewPager.activity);
         progressDialog.setTitle("JobFlow");
         progressDialog.setMessage("Please wait!s");
@@ -197,7 +201,7 @@ public class AppliedJob extends android.support.v4.app.Fragment {
 
     class control_appliedjob_services extends AsyncTask<Void, Void, Void> {
         String obj;
-String res;
+        String res;
 
         @Override
         protected void onPreExecute() {
@@ -215,28 +219,28 @@ String res;
 
             try {
                 obj = appliedJob_webservices.get_jobs(user_id);
-res = obj.toString();
-    Log.i("res",res);
-if (res!="0") {
+                res = obj.toString();
+                Log.i("res", res);
+                if (res != "0") {
 
-    JSONObject jsonObject = new JSONObject(obj);
-    JSONArray jsonArray = jsonObject.getJSONArray("all_applied_job");
-    for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = new JSONObject(obj);
+                    JSONArray jsonArray = jsonObject.getJSONArray("all_applied_job");
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-        job_name.add(jsonObject1.getString("JobTitle").toString());
-        job_type.add(jsonObject1.getString("JobType").toString());
-        location.add(jsonObject1.getString("Address").toString());
-        days.add(jsonObject1.getString("Days").toString());
-        job_id.add(jsonObject1.getString("JobId").toString());
-        company_name.add(jsonObject1.getString("CompanyName").toString());
-    }
-    }
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        job_name.add(jsonObject1.getString("JobTitle").toString());
+                        job_type.add(jsonObject1.getString("JobType").toString());
+                        location.add(jsonObject1.getString("Address").toString());
+                        days.add(jsonObject1.getString("Days").toString());
+                        job_id.add(jsonObject1.getString("JobId").toString());
+                        company_name.add(jsonObject1.getString("CompanyName").toString());
+                    }
+                }
                 Log.i(Tag, obj.toString());
             } catch (UnsupportedEncodingException e) {
                 Log.i(Tag, e.getMessage().toString());
             } catch (JSONException e) {
-               e.printStackTrace();
+                e.printStackTrace();
             }
             return null;
         }
@@ -247,37 +251,39 @@ if (res!="0") {
             progressDialog.cancel();
 
 
-
-                if (check == false) {
-                    if (res.equals("0")) {
-                        job_name.clear();
-                        jobs_list.clear();
-                        Toast.makeText(ControlViewPager.activity, "No job exist", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        if (job_name.size() > 0) {
-                            for (int i = 0; i < job_name.size(); i++) {
-                                customeDataAdapter = new CustomeDataAdapter(job_name.get(i).toString(), job_type.get(i).toString(), days.get(i).toString(), location.get(i).toLowerCase(),
-                                        company_name.get(i).toString(), job_id.get(i).toString());
-                                jobs_list.add(customeDataAdapter);
-
-                            }
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
+            if (check == false) {
+                if (res.equals("0")) {
+                    job_name.clear();
+                    jobs_list.clear();
+                    Toast.makeText(ControlViewPager.activity, "No job exist", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ControlViewPager.activity, "Check your network or server", Toast.LENGTH_SHORT).show();
+                    if (job_name.size() > 0) {
+                        for (int i = 0; i < job_name.size(); i++) {
+                            customeDataAdapter = new CustomeDataAdapter(job_name.get(i).toString(), job_type.get(i).toString(), days.get(i).toString(), location.get(i).toLowerCase(),
+                                    company_name.get(i).toString(), job_id.get(i).toString());
+                            jobs_list.add(customeDataAdapter);
 
+                        }
+
+                    }
+                    ControlViewPager.show_jobs.setText("You have applied " + job_name.size() + " new jobs");
                 }
+                mAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(ControlViewPager.activity, "Check your network or server", Toast.LENGTH_SHORT).show();
+
+            }
+
 
         }
     }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             // Fetch data or something...
-           init();
+            init();
 //            Toast.makeText(getActivity(),"run apply",Toast.LENGTH_SHORT).show();
 
         }

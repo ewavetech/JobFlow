@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F2F2F2"
 
     >
 
@@ -11,12 +12,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            android:background="#FFFFFF"
             android:scrollbars="vertical"
             android:paddingTop="?attr/actionBarSize"
             android:clipToPadding="false"
             android:scrollbarStyle="outsideOverlay"
-
+            android:background="#F2F2F2"
 
             />
 

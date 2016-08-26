@@ -19,7 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +49,7 @@ public class SaveJob extends android.support.v4.app.Fragment {
 
     SessionManager sessionManager;
     String user_id;
-Control_ProgressDialog control_progressDialog;
+    Control_ProgressDialog control_progressDialog;
     SaveJob_Webservices saveJob_webservices;
 
     public SaveJob() {
@@ -70,6 +69,7 @@ Control_ProgressDialog control_progressDialog;
             return null;
         }
         View view = inflater.inflate(R.layout.savejob, container, false);
+        ControlViewPager.show_jobs.setText("");
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         control_progressDialog = new Control_ProgressDialog();
         mAdapter = new SavedJob_Adapter(jobs_list);
@@ -198,16 +198,16 @@ Control_ProgressDialog control_progressDialog;
 
     class control_savejob_services extends AsyncTask<Void, Void, Void> {
         String obj;
-String res;
+        String res;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             jobs_list.clear();
-job_name.clear();
+            job_name.clear();
             HashMap<String, String> user = sessionManager.getUserDetails();
             user_id = user.get(SessionManager.KEY_USER_ID);
-           progressDialog.show();
+            progressDialog.show();
 
         }
 
@@ -216,71 +216,74 @@ job_name.clear();
 
             try {
                 obj = saveJob_webservices.get_savejobs(user_id);
-                Log.i("log",obj.toString());
-                res = obj.toString();
-                if (res!=("0")) {
-
-                    JSONObject jsonObject = new JSONObject(obj);
-                    JSONArray jsonArray = jsonObject.getJSONArray("all_save_job");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-
-                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        job_name.add(jsonObject1.getString("JobTitle").toString());
-                        job_type.add(jsonObject1.getString("JobType").toString());
-                        location.add(jsonObject1.getString("Address").toString());
-                        days.add(jsonObject1.getString("Days").toString());
-                        job_id.add(jsonObject1.getString("JobId").toString());
-                        company_name.add(jsonObject1.getString("CompanyName").toString());
+                Log.i("log", obj.toString());
 
 
-                    }
-
-                }
-                Log.i("savejob",user_id+" "+ obj.toString());
-            } catch (UnsupportedEncodingException e) {
-                Log.i(Tag, e.getMessage().toString());
-            } catch (JSONException e) {
-                Log.i(Tag, e.getMessage().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-progressDialog.cancel();
+            progressDialog.cancel();
             if (!check) {
+                res = obj.toString();
                 if (res.equals("0")) {
                     jobs_list.clear();
                     job_name.clear();
                     Toast.makeText(ControlViewPager.activity, "No Save job exist", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    if (job_name.size() > 0) {
-                        for (int i = 0; i < job_name.size(); i++) {
-                            customeDataAdapter = new CustomeDataAdapter(job_name.get(i).toString(), job_type.get(i).toString(), days.get(i).toString(), location.get(i).toLowerCase(),
-                                    company_name.get(i).toString(), job_id.get(i).toString());
-                            jobs_list.add(customeDataAdapter);
+                } else {
+                    if (obj.length() > 1) {
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(obj);
+                            JSONArray jsonArray = jsonObject.getJSONArray("all_save_job");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                job_name.add(jsonObject1.getString("JobTitle").toString());
+                                job_type.add(jsonObject1.getString("JobType").toString());
+                                location.add(jsonObject1.getString("Address").toString());
+                                days.add(jsonObject1.getString("Days").toString());
+                                job_id.add(jsonObject1.getString("JobId").toString());
+                                company_name.add(jsonObject1.getString("CompanyName").toString());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (job_name.size() > 0) {
+                            for (int i = 0; i < job_name.size(); i++) {
+                                customeDataAdapter = new CustomeDataAdapter(job_name.get(i).toString(), job_type.get(i).toString(), days.get(i).toString(), location.get(i).toLowerCase(),
+                                        company_name.get(i).toString(), job_id.get(i).toString());
+                                jobs_list.add(customeDataAdapter);
+
+                            }
 
                         }
-                        mAdapter.notifyDataSetChanged();
+
                     }
+
+                }
+                mAdapter.notifyDataSetChanged();
+                }else{
+                    Toast.makeText(ControlViewPager.activity, "Check your network or server", Toast.LENGTH_SHORT).show();
+
                 }
 
-            } else {
-                Toast.makeText(ControlViewPager.activity, "Check your network or server", Toast.LENGTH_SHORT).show();
 
             }
 
         }
 
-    }
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            // Fetch data or something...
-            init();
+        @Override
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+            super.setUserVisibleHint(isVisibleToUser);
+            if (isVisibleToUser) {
+                // Fetch data or something...
+                init();
+            }
         }
     }
-}
