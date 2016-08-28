@@ -91,8 +91,17 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
             @Override
             public void onClick(View view, int position) {
                 name = firstscrren_list.get(position);
-                Intent intent = new Intent(FirstScreen.this, ControlViewPager.class);
-                startActivity(intent);
+                if (sessionManager.isLoggedIn()){
+                    Intent intent = new Intent(FirstScreen.this, JobSearch_Result.class);
+                    startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(FirstScreen.this, JobSearch_Result.class);
+                    startActivity(intent);
+                }
+
+
+
 
             }
 
@@ -178,13 +187,14 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
 
         }
        else if (id == R.id.profile) {
+            TextView user_name = (TextView) findViewById(R.id.txt_user_name);
             if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                 drawer.closeDrawer(Gravity.RIGHT);
 
             } else {
 
                 drawer.openDrawer(Gravity.RIGHT);
-                TextView user_name = (TextView) findViewById(R.id.txt_user_name);
+
 
                 if (sessionManager.isLoggedIn()) {
                     HashMap<String, String> user = sessionManager.getUserDetails();
@@ -194,7 +204,8 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
 
 
                 } else {
-                    user_name.setText("JobFlow");
+
+//                    user_name.setText("JobFlow");
 
                     txt_login = (TextView) findViewById(R.id.txt_login);
                     txt_login.setOnClickListener(new View.OnClickListener() {
