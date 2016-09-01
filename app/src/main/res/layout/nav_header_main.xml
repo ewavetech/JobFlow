@@ -25,7 +25,7 @@
 
 
     <TextView
-        android:id="@+id/txt_user_name"
+        android:id="@+id/jobseeker_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -33,6 +33,7 @@
         android:textSize="20sp"
         android:clickable="true"
         android:textColor="#000000"
+        android:text=""
         />
 
 </LinearLayout>
@@ -41,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile"
         android:orientation="vertical"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         >
 
@@ -67,9 +68,9 @@ android:orientation="vertical"
     android:id="@+id/top_profile"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
+    android:visibility="gone"
 
     >
-
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -127,7 +128,85 @@ android:orientation="vertical"
             />
     </LinearLayout>
     </LinearLayout>
-    <LinearLayout
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/top_divider"
+            android:gravity="left"
+            android:weightSum="2"
+            android:orientation="vertical"
+            android:id="@+id/top_login"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+
+
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:weightSum="2"
+
+                >
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/combine_shape"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:text="Login"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_gravity="right"
+                    android:id="@+id/txt_first_login"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:layout_marginTop="20dp"
+                >
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/setting"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:text="Sign up"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_gravity="right"
+                    android:id="@+id/txt_first_signup"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="3dp"
         android:background="#f2f2f2"
@@ -142,7 +221,7 @@ android:orientation="vertical"
         android:layout_height="wrap_content"
         android:layout_below="@+id/center_divider"
         android:gravity="left"
-        android:weightSum="3"
+        android:weightSum="4"
         android:orientation="vertical"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
@@ -228,6 +307,34 @@ android:orientation="vertical"
             android:layout_gravity="right"
             />
     </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:layout_marginTop="15dp"
+            >
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/help"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="Log out"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_marginLeft="40dp"
+                android:layout_gravity="right"
+                android:id="@+id/txt_logout"
+                />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
 <LinearLayout

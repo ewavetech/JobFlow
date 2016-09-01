@@ -34,23 +34,25 @@ public class ControlViewPager extends AppCompatActivity implements NavigationVie
 
     public static TabLayout tabLayout;
     public static android.support.v7.app.ActionBar mActionBar;
-public static Activity activity;
-    public static  Toolbar toolbar;
-    public  static Context context;
-    public static TextView  show_jobs;
+    public static Activity activity;
+    public static Toolbar toolbar;
+    public static Context context;
+    public static TextView show_jobs;
 
     DrawerLayout drawer;
 
     View mCustomView;
     ImageView profile_img;
     NavigationView navigationView;
-int po = 0;
+    int po = 0;
+SessionManager sessionManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewpager_with_navigationdrawer);
         activity = this;
         context = this;
+        sessionManager = new SessionManager(this);
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,6 +69,7 @@ int po = 0;
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,19 +98,30 @@ int po = 0;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.profile) {
+            TextView logout = (TextView) findViewById(R.id.txt_logout);
+            TextView user_name = (TextView) findViewById(R.id.jobseeker_name);
             Toast.makeText(ControlViewPager.this, "click", Toast.LENGTH_LONG).show();
             if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                 drawer.closeDrawer(Gravity.RIGHT);
 
             } else {
                 drawer.openDrawer(Gravity.RIGHT);
-
+                user_name.setText(FirstScreen.UserName);
                 profile_img = (ImageView) findViewById(R.id.user_img);
 
                 profile_img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(ControlViewPager.this, "Image click now", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                logout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (sessionManager.isLoggedIn()){
+                            sessionManager.logout();
+                        }
                     }
                 });
             }
@@ -122,16 +136,15 @@ int po = 0;
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.END);
         return true;
     }
 
-    void init(){
+    void init() {
         show_jobs = (TextView) findViewById(R.id.applied_show_job);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-             setupViewPager(viewPager);
+        setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
     }

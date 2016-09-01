@@ -210,7 +210,8 @@ public class AppliedJob extends android.support.v4.app.Fragment {
             job_name.clear();
             HashMap<String, String> user = sessionManager.getUserDetails();
             user_id = user.get(SessionManager.KEY_USER_ID);
-            progressDialog.show();
+            Log.i("id",user_id);
+           progressDialog.show();
 
         }
 
@@ -219,6 +220,7 @@ public class AppliedJob extends android.support.v4.app.Fragment {
 
             try {
                 obj = appliedJob_webservices.get_jobs(user_id);
+
                 res = obj.toString();
                 Log.i("res", res);
                 if (res != "0") {

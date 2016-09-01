@@ -2,7 +2,6 @@ package webservice_control;
 
 import android.util.Log;
 
-import com.example.khasol.jobflow.Login;
 import com.example.khasol.jobflow.ShowAlljobs_WithoutLogin;
 
 import org.apache.http.HttpEntity;
@@ -27,7 +26,7 @@ public class AllJobs_Webservices {
 
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(Login.URL+"alljobs.php");
+            HttpGet httpGet = new HttpGet("http://www.khasol.com/jobflow/myphpservices/alljobs.php");
             HttpResponse httpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();
             response = EntityUtils.toString(httpEntity);

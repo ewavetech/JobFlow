@@ -175,7 +175,7 @@ public class JobSearch_Result extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             jobs_list.clear();
-            progressDialog.show();
+           progressDialog.show();
 
 
         }
@@ -185,11 +185,9 @@ public class JobSearch_Result extends AppCompatActivity {
 
             try {
                 obj = allJobs_webservices.get_jobs();
-
                 JSONObject jsonObject = new JSONObject(obj);
                 JSONArray jsonArray = jsonObject.getJSONArray("jobs");
                 for (int i = 0; i < jsonArray.length(); i++) {
-
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     job_name.add(jsonObject1.getString("JobTitle").toString());
                     job_type.add(jsonObject1.getString("JobType").toString());
@@ -202,9 +200,9 @@ public class JobSearch_Result extends AppCompatActivity {
 
                 Log.i("jobs", obj.toString());
             } catch (UnsupportedEncodingException e) {
-                Log.i("exception", e.getMessage().toString());
+               e.printStackTrace();
             } catch (JSONException e) {
-                Log.i("exception", e.getMessage().toString());
+            e.printStackTrace();
             }
             return null;
         }

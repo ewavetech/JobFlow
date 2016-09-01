@@ -25,7 +25,7 @@
 
 
         <TextView
-            android:id="@+id/txt_with_login_user_name"
+            android:id="@+id/jobseeker_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="JobFlow"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile"
         android:orientation="vertical"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         >
 
@@ -148,7 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/center_divider"
             android:gravity="left"
-            android:weightSum="3"
+            android:weightSum="4"
             android:orientation="vertical"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="15dp"
@@ -238,6 +238,34 @@
                     android:layout_gravity="right"
                     android:id="@+id/txt_hepl"
                     android:clickable="true"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:layout_marginTop="15dp"
+                >
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/help"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:text="Log out"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_gravity="right"
+                    android:id="@+id/txt_logout"
                     />
             </LinearLayout>
         </LinearLayout>

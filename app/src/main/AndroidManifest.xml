@@ -15,6 +15,7 @@
             android:name=".FirstScreen"
             android:windowSoftInputMode="stateHidden|adjustPan"
             android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
             >
 
             <intent-filter>
@@ -25,32 +26,46 @@
         </activity>
         <activity
             android:name=".ShowAlljobs_WithoutLogin"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"></activity>
 
         <activity
             android:name=".Login"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"></activity>
         <activity
             android:name=".Search"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"></activity>
         <activity
             android:name=".ControlViewPager"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan">
 
         </activity>
         <activity
             android:name=".JobSearch_Result"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan">
 
         </activity>
         <activity
             android:name=".JobDetails"
-            android:windowSoftInputMode="stateHidden|adjustPan">
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:screenOrientation="portrait"
+            >
 
         </activity>
         <activity
             android:name=".Control_ProgressDialog"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan">
+
+        </activity>
+        <activity android:name=".SignUp"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:screenOrientation="portrait"
+            >
 
         </activity>
     </application>

@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,23 +48,18 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
     ImageView profile_img;
     NavigationView navigationView;
     SessionManager sessionManager;
-    TextView txt_name, txt_login, txt_signup, txt_feedback, txt_help, txt_invitefriend, txt_setting, txt_profile;
+    TextView txt_name, txt_login, txt_signup, txt_feedback, txt_help, txt_invitefriend, txt_setting, txt_profile, txt_logout;
+    public static String UserName;
+    public static String URL = "http://khasol.com/jobflow/myphpservices/";
+    LinearLayout top_profile, top_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         sessionManager = new SessionManager(FirstScreen.this);
-        if (sessionManager.isLoggedIn()) {
-            setContentView(R.layout.activity_main);
 
-            HashMap<String, String> user = sessionManager.getUserDetails();
-            String name = user.get(SessionManager.USER_NAME);
-            String id = user.get(SessionManager.KEY_USER_ID);
-            String password = user.get(SessionManager.User_Password);
-        } else {
-            setContentView(R.layout.withoutlogin_activity_main);
-        }
+        setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -91,27 +87,20 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
             @Override
             public void onClick(View view, int position) {
                 name = firstscrren_list.get(position);
-                if (sessionManager.isLoggedIn()){
+                if (sessionManager.isLoggedIn()) {
+                    Intent intent = new Intent(FirstScreen.this, ControlViewPager.class);
+                    startActivity(intent);
+                } else {
                     Intent intent = new Intent(FirstScreen.this, JobSearch_Result.class);
                     startActivity(intent);
                 }
-                else{
-                    Intent intent = new Intent(FirstScreen.this, JobSearch_Result.class);
-                    startActivity(intent);
-                }
-
-
-
-
             }
-
 
             @Override
             public void onLongClick(View view, int position) {
 
             }
         }));
-
 
         this.recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             boolean scroll_down;
@@ -170,24 +159,24 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.search){
-            Intent intent = new Intent(FirstScreen.this,Search.class);
+        if (id == R.id.search) {
+            Intent intent = new Intent(FirstScreen.this, Search.class);
             startActivity(intent);
 
-        }
-       else if(id == R.id.home){
+        } else if (id == R.id.home) {
             /*Intent intent = new Intent(FirstScreen.this,Search.class);
             startActivity(intent);
 */
-        }
-        else if(id == R.id.inbox){
-            Intent intent = new Intent(FirstScreen.this,Search.class);
+        } else if (id == R.id.inbox) {
+            Intent intent = new Intent(FirstScreen.this, Search.class);
             startActivity(intent);
 
 
-        }
-       else if (id == R.id.profile) {
-            TextView user_name = (TextView) findViewById(R.id.txt_user_name);
+        } else if (id == R.id.profile) {
+            top_profile = (LinearLayout) findViewById(R.id.top_profile);
+            top_login = (LinearLayout) findViewById(R.id.top_login);
+            txt_logout = (TextView) findViewById(R.id.txt_logout);
+
             if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                 drawer.closeDrawer(Gravity.RIGHT);
 
@@ -197,17 +186,32 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
 
 
                 if (sessionManager.isLoggedIn()) {
+                    top_profile.setVisibility(View.VISIBLE);
+                    txt_logout.setVisibility(View.VISIBLE);
+                    top_login.setVisibility(View.GONE);
+                    txt_name = (TextView) findViewById(R.id.jobseeker_name);
                     HashMap<String, String> user = sessionManager.getUserDetails();
                     String name = user.get(SessionManager.USER_NAME);
+                    txt_name.setText(name);
 
-                    user_name.setText(name);
+                    txt_logout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            sessionManager.logout();
+                            Intent intent = new Intent(FirstScreen.this, Login.class);
+                            startActivity(intent);
+
+                        }
+                    });
 
 
                 } else {
-
-//                    user_name.setText("JobFlow");
-
-                    txt_login = (TextView) findViewById(R.id.txt_login);
+                    top_profile.setVisibility(View.GONE);
+                    top_login.setVisibility(View.VISIBLE);
+                    txt_logout.setVisibility(View.GONE);
+                    txt_name = (TextView) findViewById(R.id.jobseeker_name);
+                    txt_name.setText("JobFlow");
+                    txt_login = (TextView) findViewById(R.id.txt_first_login);
                     txt_login.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -218,11 +222,13 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
 
                         }
                     });
-                    txt_signup = (TextView) findViewById(R.id.txt_sign_up);
+                    txt_signup = (TextView) findViewById(R.id.txt_first_signup);
                     txt_signup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(FirstScreen.this, "Not available yet ", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(FirstScreen.this, SignUp.class);
+                            startActivity(intent);
+
                         }
                     });
 

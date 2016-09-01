@@ -142,6 +142,7 @@ public class Login extends Activity {
                             _name = jsonObject1.getString("FirstName").toString();
                             _id = jsonObject1.getString("UserId").toString();
 
+
                         } catch (Exception e) {
                             e.printStackTrace();
 
@@ -150,6 +151,7 @@ public class Login extends Activity {
                       sessionManager.createLoginSession(_id, _name, password);
                      Intent intent = new Intent(Login.this, ControlViewPager.class);
                     startActivity(intent);
+                    finish();
                 }
             } else {
                 Toast.makeText(Login.this, "Please check your network or service", Toast.LENGTH_SHORT).show();
