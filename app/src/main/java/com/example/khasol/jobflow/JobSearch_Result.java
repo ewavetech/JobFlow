@@ -54,6 +54,7 @@ public class JobSearch_Result extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.without_loginjobs);
         init();
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mAdapter = new JobsAdapter(jobs_list);
         mLayoutManager = new LinearLayoutManager(this);
@@ -91,11 +92,19 @@ public class JobSearch_Result extends AppCompatActivity {
                 }
             }
         });
-        new control_alljobs_services().execute();
+        Boolean isConnected = connectionDetector.isConnectingToInternet();
+        if(isConnected) {
+            new control_alljobs_services().execute();
+        }
+        else{
+
+            Toast.makeText(JobSearch_Result.this,"Please check your internet connection",Toast.LENGTH_SHORT).show();
+        }
     }
 
     void init() {
         allJobs_webservices = new AllJobs_Webservices();
+        connectionDetector  = new ConnectionDetector(JobSearch_Result.this);
         job_name = new ArrayList<>();
         job_type = new ArrayList<>();
         location = new ArrayList<>();
@@ -109,7 +118,7 @@ public class JobSearch_Result extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(JobSearch_Result.this, Search.class);
+                Intent intent = new Intent(JobSearch_Result.this, FirstScreen.class);
                 startActivity(intent);
             }
         });

@@ -19,6 +19,9 @@ android {
 
     }
 }
+android {
+    useLibrary 'org.apache.http.legacy'
+}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -26,5 +29,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:design:24.1.1'
     compile 'com.android.support:recyclerview-v7:24.1.1'
-    compile files('libs/commons-io-2.4.jar')
+
 }

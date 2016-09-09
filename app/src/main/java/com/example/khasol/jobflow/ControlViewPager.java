@@ -1,7 +1,10 @@
 package com.example.khasol.jobflow;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -19,10 +22,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,21 +36,27 @@ import java.util.List;
 public class ControlViewPager extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ViewPager viewPager;
     private PagerAdapter myPagerAdapter;
-
+    //4772254
     public static TabLayout tabLayout;
     public static android.support.v7.app.ActionBar mActionBar;
     public static Activity activity;
     public static Toolbar toolbar;
     public static Context context;
     public static TextView show_jobs;
-
+    ProgressDialog progressDialog;
     DrawerLayout drawer;
-
+    String result;
     View mCustomView;
     ImageView profile_img;
     NavigationView navigationView;
     int po = 0;
-SessionManager sessionManager;
+    SessionManager sessionManager;
+
+    ConnectionDetector connectionDetector;
+    String user_id;
+    public static boolean check = false;
+    MyClass myClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,33 +106,55 @@ SessionManager sessionManager;
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.profile) {
+            LinearLayout profile, login, logout_panel;
+            profile = (LinearLayout) findViewById(R.id.top_profile);
+            login = (LinearLayout) findViewById(R.id.top_login);
+            logout_panel = (LinearLayout) findViewById(R.id.logout_panel);
             TextView logout = (TextView) findViewById(R.id.txt_logout);
             TextView user_name = (TextView) findViewById(R.id.jobseeker_name);
-            Toast.makeText(ControlViewPager.this, "click", Toast.LENGTH_LONG).show();
             if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                 drawer.closeDrawer(Gravity.RIGHT);
 
             } else {
                 drawer.openDrawer(Gravity.RIGHT);
-                user_name.setText(FirstScreen.UserName);
+                if (sessionManager.isLoggedIn()) {
+                    login.setVisibility(View.GONE);
+                    profile.setVisibility(View.VISIBLE);
+                    logout_panel.setVisibility(View.VISIBLE);
+                    TextView cv_upload = (TextView) findViewById(R.id.cv_upload);
+                    HashMap<String, String> user = sessionManager.getUserDetails();
+                    String name = user.get(SessionManager.USER_NAME);
+                    user_name.setText(name);
+                    logout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            sessionManager.logout();
+                            Intent intent = new Intent(ControlViewPager.this, Login.class);
+                            startActivity(intent);
+                        }
+                    });
+                    cv_upload.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(ControlViewPager.this, UploadCv.class);
+                            startActivityForResult(intent, 1);
+                        }
+                    });
+                } else {
+                    logout_panel.setVisibility(View.GONE);
+                    profile.setVisibility(View.GONE);
+                    login.setVisibility(View.VISIBLE);
+                    user_name.setText("JobFlow");
+                }
+
+
                 profile_img = (ImageView) findViewById(R.id.user_img);
 
                 profile_img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(ControlViewPager.this, "Image click now", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                logout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        if (sessionManager.isLoggedIn()){
-                            sessionManager.logout();
-                        }
                     }
                 });
             }
@@ -147,6 +180,11 @@ SessionManager sessionManager;
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        sessionManager = new SessionManager(ControlViewPager.activity);
+        progressDialog = new ProgressDialog(ControlViewPager.activity);
+        progressDialog.setTitle("JobFlow");
+        progressDialog.setMessage("Please wait!s");
+
     }
 
 
@@ -191,5 +229,73 @@ SessionManager sessionManager;
             return mFragmentTitleList.get(position);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                result = data.getStringExtra("path");
+                if (result.equals(null)) {
+                    Toast.makeText(ControlViewPager.this, "File not exist", Toast.LENGTH_SHORT).show();
+                } else {
+                    connectionDetector = new ConnectionDetector(ControlViewPager.activity);
+                    boolean isInternetPresent = connectionDetector.isConnectingToInternet();
+                    if (isInternetPresent) {
+                        new control_cv_services().execute();
+
+                    } else {
+
+                        Toast.makeText(ControlViewPager.activity, "Please check your internet or network", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActi
+
+    class control_cv_services extends AsyncTask<Void, Void, Void> {
+        int obj;
+        String res;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            user_id = user.get(SessionManager.KEY_USER_ID);
+            // Log.i("id", "" + user_id);
+            progressDialog.show();
+            myClass = new MyClass();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            obj = myClass.uploadFile(result, user_id);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.cancel();
+
+
+            if (check == false) {
+                // service running
+                if (MyClass.response_uploadCV.contains("success")) {
+                    Toast.makeText(ControlViewPager.this, "CV has been uploaded successfully ", Toast.LENGTH_LONG).show();
+                } else if (MyClass.response_uploadCV.contains("fail")) {
+                    Toast.makeText(ControlViewPager.this, "CV can't uploaded successfully ", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                //service not running
+                Toast.makeText(ControlViewPager.this, "Please check your network and server", Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
 
 }

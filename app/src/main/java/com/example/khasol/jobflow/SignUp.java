@@ -149,9 +149,9 @@ public class SignUp extends Activity {
             super.onPostExecute(aVoid);
             progressDialog.cancel();
             if (check == false) {
-Log.i("infoe",obj.toString());
+           Log.i("infoe",obj.toString());
                 res = obj.toString();
-                if (res.length()>2) {
+                if (res.contains("1")) {
                     Toast.makeText(SignUp.this, "Please verify your email address", Toast.LENGTH_LONG).show();
                     sessionManager.createLoginSession(_id, _name, password);
                     Intent intent = new Intent(SignUp.this, Login.class);

@@ -22,7 +22,7 @@
 
         >
         <include
-            layout="@layout/left_menu_search_main"
+            layout="@layout/nav_header_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.design.widget.NavigationView>

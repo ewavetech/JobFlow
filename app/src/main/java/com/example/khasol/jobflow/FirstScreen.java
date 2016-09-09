@@ -51,7 +51,7 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
     TextView txt_name, txt_login, txt_signup, txt_feedback, txt_help, txt_invitefriend, txt_setting, txt_profile, txt_logout;
     public static String UserName;
     public static String URL = "http://khasol.com/jobflow/myphpservices/";
-    LinearLayout top_profile, top_login;
+    LinearLayout top_profile, top_login, logout_panel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,16 +175,12 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
         } else if (id == R.id.profile) {
             top_profile = (LinearLayout) findViewById(R.id.top_profile);
             top_login = (LinearLayout) findViewById(R.id.top_login);
+            logout_panel = (LinearLayout) findViewById(R.id.logout_panel);
             txt_logout = (TextView) findViewById(R.id.txt_logout);
-
             if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                 drawer.closeDrawer(Gravity.RIGHT);
-
             } else {
-
                 drawer.openDrawer(Gravity.RIGHT);
-
-
                 if (sessionManager.isLoggedIn()) {
                     top_profile.setVisibility(View.VISIBLE);
                     txt_logout.setVisibility(View.VISIBLE);
@@ -193,7 +189,7 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
                     HashMap<String, String> user = sessionManager.getUserDetails();
                     String name = user.get(SessionManager.USER_NAME);
                     txt_name.setText(name);
-
+                    logout_panel.setVisibility(View.VISIBLE);
                     txt_logout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -204,11 +200,10 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
                         }
                     });
 
-
                 } else {
+                    logout_panel.setVisibility(View.GONE);
                     top_profile.setVisibility(View.GONE);
                     top_login.setVisibility(View.VISIBLE);
-                    txt_logout.setVisibility(View.GONE);
                     txt_name = (TextView) findViewById(R.id.jobseeker_name);
                     txt_name.setText("JobFlow");
                     txt_login = (TextView) findViewById(R.id.txt_first_login);
@@ -228,22 +223,16 @@ public class FirstScreen extends AppCompatActivity implements NavigationView.OnN
                         public void onClick(View view) {
                             Intent intent = new Intent(FirstScreen.this, SignUp.class);
                             startActivity(intent);
-
                         }
                     });
-
-
                 }
                 profile_img = (ImageView) findViewById(R.id.user_img);
-
                 profile_img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(FirstScreen.this, "Image click now", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
             }
             return true;
         }

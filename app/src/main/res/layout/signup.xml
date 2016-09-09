@@ -35,11 +35,14 @@
         android:orientation="vertical">
         <ScrollView android:layout_width="fill_parent"
             android:layout_height="400dp"
+            android:layout_marginBottom="40dp"
+
             >
 <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+
     >
 
         <LinearLayout
@@ -283,7 +286,7 @@
                     android:background="@android:color/transparent"
                     android:fontFamily="OpenSans"
                     android:hint="Password"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
                     android:singleLine="true"
                     android:textColor="#000"
                     android:textSize="25sp"
@@ -334,7 +337,7 @@
                 android:background="@android:color/transparent"
                 android:fontFamily="OpenSans"
                 android:hint="Repeat password"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:singleLine="true"
                 android:textColor="#000"
                 android:textSize="25sp"

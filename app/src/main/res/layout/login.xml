@@ -67,6 +67,8 @@
                     android:textColor="#000"
                     android:textSize="25sp"
                     android:id="@+id/user_name"
+                    android:inputType="textEmailAddress"
+
                     />
 
 

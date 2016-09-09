@@ -60,6 +60,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
         right_navigation();
     }
 
+
     void init() {
         name = (EditText) findViewById(R.id.name_search);
         location = (EditText) findViewById(R.id.location_search);
@@ -95,61 +96,60 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(Search.this, "Not available yet ", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Search.this, FirstScreen.class);
+                startActivity(intent);
+                finish();
             }
         });
         profile = (ImageView) findViewById(R.id.search_profile);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                LinearLayout profile, login, logout_panel;
+                profile = (LinearLayout) findViewById(R.id.top_profile);
+                login = (LinearLayout) findViewById(R.id.top_login);
+                logout_panel = (LinearLayout) findViewById(R.id.logout_panel);
+                TextView logout = (TextView) findViewById(R.id.txt_logout);
+                TextView user_name = (TextView) findViewById(R.id.jobseeker_name);
                 if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                     drawer.closeDrawer(Gravity.RIGHT);
 
                 } else {
                     drawer.openDrawer(Gravity.RIGHT);
-                    TextView user_name = (TextView) findViewById(R.id.search_txt_user_name);
-                    search_top_profile = (LinearLayout) findViewById(R.id.search_top_profile);
-                    searh_top_login = (LinearLayout) findViewById(R.id.search_top_login);
                     if (sessionManager.isLoggedIn()) {
+                        login.setVisibility(View.GONE);
+                        profile.setVisibility(View.VISIBLE);
+                        logout_panel.setVisibility(View.VISIBLE);
                         HashMap<String, String> user = sessionManager.getUserDetails();
                         String name = user.get(SessionManager.USER_NAME);
-                        searh_top_login.setVisibility(View.GONE);
-                        search_top_profile.setVisibility(View.VISIBLE);
                         user_name.setText(name);
-
-
-                    } else {
-
-                        searh_top_login.setVisibility(View.VISIBLE);
-                        search_top_profile.setVisibility(View.GONE);
-                        user_name.setText("JobFlow");
-
-                        txt_login = (TextView) findViewById(R.id.search_txt_login);
-                        txt_login.setOnClickListener(new View.OnClickListener() {
+                        logout.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                sessionManager.logout();
                                 Intent intent = new Intent(Search.this, Login.class);
                                 startActivity(intent);
-                                drawer.closeDrawer(Gravity.RIGHT);
-                                //  finish();
-
                             }
                         });
-                        txt_signup = (TextView) findViewById(R.id.search_txt_signup);
-                        txt_signup.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(Search.this, "Not available yet ", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
+                    } else {
+                        logout_panel.setVisibility(View.GONE);
+                        profile.setVisibility(View.GONE);
+                        login.setVisibility(View.VISIBLE);
+                        user_name.setText("JobFlow");
                     }
-                }
 
+
+                    profile_img = (ImageView) findViewById(R.id.user_img);
+
+                    profile_img.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(Search.this, "Image click now", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -157,7 +157,6 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.END);
         return true;

@@ -210,7 +210,7 @@ public class AppliedJob extends android.support.v4.app.Fragment {
             job_name.clear();
             HashMap<String, String> user = sessionManager.getUserDetails();
             user_id = user.get(SessionManager.KEY_USER_ID);
-            Log.i("id",user_id);
+            Log.i("id",""+user_id);
            progressDialog.show();
 
         }
